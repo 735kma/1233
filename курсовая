@@ -1,0 +1,155 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <ctime>
+#include <fstream>
+using namespace std;
+class Gamer
+{
+public://открытый класс
+	string name;
+	int score;
+};
+int readNumber() {
+	int q;
+	q = -2;
+	while (q == -2) {
+		string stroka;
+		getline(cin, stroka);
+
+
+
+		if (stroka == "1" || stroka == "2" || stroka == "3" || stroka == "4" || stroka == "5" || stroka == "6" || stroka == "7" || stroka == "8" || stroka == "9" || stroka == "10")
+		{
+			q = atoi(stroka.c_str());//конвертация строки в число
+		}
+		else
+		{
+			cin.clear();
+			cout << "Ошибка ввода\nПовторите ввод: ";
+			q = -2;
+		}
+
+
+	}
+	return q;
+}
+int game()
+{
+
+	int count = 0;
+	srand(time(0));
+	int unknown_number = 1 + rand() % 10;
+	int enter_number = -1;
+
+	while (enter_number != unknown_number)
+	{
+		cout << "Введите число в промежутке [1:10] : ";
+		enter_number = readNumber();//повторяется ввод
+		count++;//увеличивается число попыток
+		if (unknown_number > enter_number)
+			cout << "Загаданное число больше" << endl;
+		else
+		{
+			if (unknown_number < enter_number)
+				cout << "Загаданное число меньше" << endl;
+			else
+			{
+				cout << "Вы выиграли" << endl;	
+				break;//прерывание игры
+			}
+		}
+
+	}
+	return count;//возврат количества попыток
+}
+
+int main()
+{
+	string key = "q";
+	setlocale(0, "Russian");
+	Gamer gamer;
+	Gamer scoreArray[11];//массив рекордов
+	int scoreCount = 0;
+
+	ifstream scoreTableFile1("scoreTable.txt");//файловый ввод в таблицу(документ)
+	int filesize = 0;
+	scoreTableFile1.seekg(0, ios::end);// проверка файла на наличие какого-либо текста
+	filesize = scoreTableFile1.tellg();//определение текущего указателя ввода
+	if (!scoreTableFile1.is_open())
+	{
+		cout << "Файл рекордов невозможно открыть \n";
+	}
+	else if (filesize == 0) {
+		cout << "Файл рекордов пуст\n";
+		scoreCount = 0;
+	}
+	else
+	{
+		scoreTableFile1.seekg(0, 0);
+		for (scoreCount = 0; (scoreCount < 10) && (!(scoreTableFile1.eof())); scoreCount++)//добавление если не заполнен
+		{
+			scoreTableFile1 >> scoreArray[scoreCount].name >> scoreArray[scoreCount].score;
+		}
+	}
+
+	ofstream scoreTableFile("scoreTable.txt");
+	cout << "Введите имя: ";
+	gamer.name = "";
+	while (gamer.name.length()<1)
+		getline(cin, gamer.name);
+
+	while (key != "0") {
+		cout << "Выберите действие: \n1-Играть \n2-Смотреть таблицу рекордов \n0-Выход \n";
+		getline(cin, key);
+		if (key == "1") {
+			gamer.score = game();
+			scoreArray[scoreCount] = gamer;
+
+			if (scoreCount < 11)
+			{
+				scoreCount++;
+			}
+
+			if (scoreCount > 1) {
+
+
+
+				for (int i = 0; i < scoreCount - 1; i++)
+				{
+					int indexMin = i;
+					for (int j = i + 1; j < scoreCount; j++)
+						if (scoreArray[j].score < scoreArray[indexMin].score)
+							indexMin = j;
+					swap(scoreArray[i], scoreArray[indexMin]);
+				}
+			}
+			if (scoreCount == 11)
+			{
+				scoreCount--;
+			}
+
+		}
+		else if (key == "2") {
+			cout << "\t-=Рекорды=-\n";
+			for (int i = 0; i < scoreCount; i++)
+				cout << scoreArray[i].name << "\t" << scoreArray[i].score << endl;
+
+		}
+		else if (key == "0") {
+			scoreTableFile.clear();
+			for (int i = 0; i < scoreCount; i++)
+
+				scoreTableFile.close();
+			exit(0);
+
+		}
+		else {
+			cout << "Ошибка выбора \nВведите заново:\n";
+
+		}
+
+	}
+	system("pause");
+	return 0;
+}
