@@ -1,0 +1,104 @@
+#pragma once
+template<class T>
+class Decque
+{
+	struct Pole
+	{
+		T* element;
+		Pole* leftElement;
+		Pole* rightElement;
+	};
+private:
+	Pole* _leftElement;
+	Pole* _rightElement;
+	int _count;
+public:
+	Decque();
+	~Decque();
+	void DobavlenieLeft(T* element);
+	void DobavlenieRight(T* element);
+	T* IzvlechLeft();
+	T* IzvlechRight();
+	int Count();
+};
+
+template<class T>
+inline Decque<T>::Decque()
+{
+	_count = 0;
+	_leftElement = nullptr;
+	_rightElement = nullptr;
+}
+
+template<class T>
+inline Decque<T>::~Decque()
+{
+	for (int i = 0; i < Count(); i++)
+	{
+		delete IzvlechRight();
+	}
+}
+
+template<class T>
+inline void Decque<T>::DobavlenieLeft(T * element)
+{
+	Pole* newPole = new Pole;
+	newPole->element = element;
+	newPole->leftElement = nullptr;
+	newPole->rightElement = _leftElement;
+	if (_count > 0) {
+		_leftElement->leftElement = newPole;
+	}
+	else {
+		_leftElement= newPole;
+		_rightElement = newPole;
+	}
+	_leftElement = newPole;
+	_count++;
+}
+
+template<class T>
+inline void Decque<T>::DobavlenieRight(T * element)
+{
+	Pole* newPole = new Pole;
+	newPole->element = element;
+	newPole->rightElement = nullptr;
+	newPole->leftElement = _rightElement;
+	if (_count > 0) {
+		_rightElement->rightElement = newPole;
+	}
+	else {
+		_leftElement = newPole;
+		_rightElement = newPole;
+	}
+	_rightElement = newPole;
+	_count++;
+}
+
+template<class T>
+inline T * Decque<T>::IzvlechLeft()
+{
+	T* element = _leftElement->element;
+	Pole* pole = _leftElement;
+	_leftElement = _leftElement->rightElement;
+	delete pole;
+	_count--;
+	return element;
+}
+
+template<class T>
+inline T * Decque<T>::IzvlechRight()
+{
+	T* element = _rightElement->element;
+	Pole* pole = _rightElement;
+	_rightElement = _rightElement->leftElement;
+	delete pole;
+	_count--;
+	return element;
+}
+
+template<class T>
+inline int Decque<T>::Count()
+{
+	return _count;
+}
