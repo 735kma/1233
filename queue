@@ -1,0 +1,74 @@
+#pragma once
+template <class T>
+class Queue
+{
+	struct Pole
+	{
+		T* element;
+		Pole* nextPole;
+	};
+private:
+	Pole* _firstElement;
+	int _count;
+
+public:
+	Queue();
+	~Queue();
+	void Dobavlenie(T* element);
+	T* Izvlech();
+	int Count();
+};
+
+template<class T>
+inline Queue<T>::Queue()
+{
+	_count = 0;
+	_firstElement = nullptr;
+}
+
+template<class T>
+inline Queue<T>::~Queue()
+{
+	for (int i = 0; i < Count(); i++)
+	{
+		delete Izvlech();
+	}
+}
+
+template<class T>
+inline void Queue<T>::Dobavlenie(T * element)
+{
+	Pole* newPole = new Pole;
+	newPole->element = element;
+	newPole->nextPole = nullptr;
+	if (_count > 0) {
+		Pole* last = _firstElement;
+		for (int i = 1; i < Count(); i++)
+		{
+			last = last->nextPole;
+		}
+		last->nextPole = newPole;
+	}
+	else {
+		_firstElement = newPole;
+	}
+	_count++;
+}
+
+template<class T>
+inline T * Queue<T>::Izvlech()
+{
+	Pole* first = _firstElement;
+	_firstElement = first->nextPole;
+	T* element = first->element;
+	delete first;
+	_count--;
+	return element;
+}
+
+template<class T>
+inline int Queue<T>::Count()
+{
+
+	return _count;
+}
