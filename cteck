@@ -1,0 +1,69 @@
+#pragma once
+template <class T>
+class Stack
+{
+	struct Pole
+	{
+		T* element;
+		Pole* prevPole;
+	};
+private:
+	Pole* _lastElement;
+	int _count;
+
+public:
+	Stack();
+	~Stack();
+	void Dobavlenie(T* element);
+	T* Izvlech();
+	int Count();
+};
+
+template<class T>
+inline Stack<T>::Stack()
+{
+	_count = 0;
+	_lastElement = nullptr;
+}
+
+template<class T>
+inline Stack<T>::~Stack()
+{
+	for (int i = 0; i < Count(); i++)
+	{
+		delete Izvlech();
+	}
+}
+
+template<class T>
+inline void Stack<T>::Dobavlenie(T * element)
+{
+	Pole* newPole = new Pole;
+	newPole->element = element;
+	if (Count() > 0) {
+		newPole->prevPole = _lastElement;
+	}
+	else {
+		newPole->prevPole = nullptr;
+	}
+	_lastElement = newPole;
+	_count++;
+}
+
+template<class T>
+inline T * Stack<T>::Izvlech()
+{
+	T* element = _lastElement->element;
+	Pole* pole = _lastElement;
+	_lastElement = _lastElement->prevPole;
+	delete pole;
+	_count--;
+	return element;
+}
+
+template<class T>
+inline int Stack<T>::Count()
+{
+
+	return _count;
+}
