@@ -1,0 +1,63 @@
+#include<iostream>
+#include "Queue.h"
+#include<fstream>
+using namespace std;
+
+void a(){
+double a;
+double b;
+cin >> a;
+cin >> b;
+ifstream file("queue.txt");
+Queue<double> queue;
+double i;
+while (!file.eof()) {
+	file >> i;
+	if (i < a) {
+		cout << i << " ";
+	}
+	else {
+		queue.Dobavlenie(new double(i));
+	}
+}
+for (int i = queue.Count(); i >= 0; i--)
+{
+	i = *queue.Izvlech();
+	if (i <= b) {
+		cout << i << " ";
+	}
+	else {
+		queue.Dobavlenie(new double(i));
+	}
+}
+while (queue.Count()>0)
+{
+	cout << *queue.Izvlech() << " ";
+}
+file.close();}
+
+void m()
+{
+	ifstream file("queue.txt");
+	Queue<int> queue;
+	int i;
+	while (!file.eof()) {
+		file >> i;
+		if (i >= 0) {
+			queue.Dobavlenie(new int(i));
+		}
+		else {
+			cout << i << " ";
+		}
+	}
+	while (queue.Count()>0)
+	{
+		cout << *queue.Izvlech() << " ";
+	}
+	file.close();
+}
+
+void main() {
+	a();
+	m();
+}
